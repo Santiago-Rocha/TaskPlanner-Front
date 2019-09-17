@@ -6,12 +6,29 @@ export class Login extends React.Component {
 
     constructor(props){
         super(props);
+        this.state = {email : '', password : ''}
+        this.handleEmailChange =  this.handleEmailChange.bind(this);
+        this.hanldePasswordChange = this.hanldePasswordChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
     onSubmit(e){
         e.preventDefault();
-        console.log("hola prrros")
+        if(localStorage.getItem(this.state.email)===this.state.password){
+            localStorage.setItem('isLoggedIn',true);
+            localStorage.setItem('correo', this.state.email);
+            window.location.href = "/";
+        } else {
+            alert("The email or password is incorrect");
+        }
+    }
+
+    handleEmailChange(e){
+        this.setState({email : e.target.value})
+    }
+
+    hanldePasswordChange(e){
+        this.setState({password : e.target.value})
     }
 
     render() {
@@ -35,11 +52,15 @@ export class Login extends React.Component {
                                     validate
                                     error="wrong"
                                     success="right"
+                                    value={this.state.email}
+                                    onChange={this.handleEmailChange}
                                 />
                                 <MDBInput
                                     label="Type your password"
                                     type="password"
                                     validate
+                                    value={this.state.password}
+                                    onChange={this.hanldePasswordChange}
                                 />
                             </div>
                             <div className="text-center">

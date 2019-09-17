@@ -7,7 +7,7 @@ export class Todo extends React.Component {
 
     render() {
         return (
-            <Card>
+            <Card style={{marginTop: "10px"}}>
                 <CardContent>
                     <p>{this.props.description}</p>
                     <p>{this.props.status} - {this.props.dueDate.format('DD-MM-YYYY')} </p>

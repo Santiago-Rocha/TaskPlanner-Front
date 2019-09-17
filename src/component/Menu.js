@@ -36,7 +36,7 @@ export default function Menux() {
                     </ListItemIcon>
                     <ListItemText >
                         <p className="text-menu">Santiago</p>
-                        <p className="text-menu">flaso@hotmail.com</p>
+                        <p className="text-menu">{localStorage.getItem("correo")}</p>
                     </ListItemText>
                 </ListItem>
 

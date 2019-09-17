@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { TodoList } from "./TodoList";
-import DatePicker from 'react-datepicker';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
@@ -9,81 +8,92 @@ import moment from "moment";
 export class TodoApp extends Component {
     constructor(props) {
         super(props);
-        this.state = { items: [], text: '', priority: 0, dueDate: moment() };
-        this.handleTextChange = this.handleTextChange.bind(this);
-        this.handlePriorityChange = this.handlePriorityChange.bind(this);
+        this.state = { items: [], description: '', status: '', dueDate: moment(), name: '', email: ''};
+        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.hanldeNameResponsibleChange = this.hanldeNameResponsibleChange.bind(this);
+        this.hanldeEmailResponsibleChange = this.hanldeEmailResponsibleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     render() {
         return (
             <div>
+                <TodoList todoList={this.state.items} />
                 <form onSubmit={this.handleSubmit} className="todo-form">
                     <h3>New TODO</h3>
                     <TextField
                         id="text"
-                        label="Text"
-                        value={this.state.text}
-                        onChange={this.handleTextChange}
+                        label="Description"
+                        value={this.state.description}
+                        onChange={this.handleDescriptionChange}
                         margin="normal" />
                     <br />
+                    <TextField
+                        id="name"
+                        label="Responsible Name"
+                        value={this.state.name}
+                        onChange={this.hanldeNameResponsibleChange}
+                        margin="normal" />
+
+                    <TextField
+                        id="email"
+                        label="Responsible Email"
+                        value={this.state.email}
+                        onChange={this.hanldeEmailResponsibleChange}
+                        margin="normal" />
                     <br />
                     <TextField
                         id="priority"
-                        label="Priority"
-                        type="number"
-                        value={this.state.priority}
-                        onChange={this.handlePriorityChange}
+                        label="Status"
+                        value={this.state.status}
+                        onChange={this.handleStatusChange}
                         margin="normal" />
                     <br />
-                    <br />
-                    {/*<TextField
+                    <TextField
                         id="due-date"
                         label="Due-Date"
                         type="date"
-                        defaultValue={this.state.dueDate}
+                        defaultValue={this.state.dueDate.format('YYYY-MM-DD')}
                         onChange={this.handleDateChange}
                         margin="normal"
                         InputLabelProps={{
                             shrink: true,
-                        }} />*/}
-
-                    <DatePicker
-                        id="due-date"
-                        selected={this.state.dueDate}
-                        placeholderText="Due date"
-                        onChange={this.handleDateChange}>
-                    </DatePicker>
+                        }} />
                     <br />
                     <Button variant="outlined" color="secondary" type="submit">
                         Add #{this.state.items.length + 1}
                     </Button>
                 </form>
-                <br />
-                <br />
-                <TodoList todoList={this.state.items} />
             </div>
         );
     }
 
-    handleTextChange(e) {
+    handleDescriptionChange(e) {
         this.setState({
-            text: e.target.value
+            description: e.target.value
         });
     }
 
-    handlePriorityChange(e) {
+    handleStatusChange(e) {
         this.setState({
-            priority: e.target.value
+            status: e.target.value
         });
     }
 
-    handleDateChange(date) {
-        console.log(date)
+    handleDateChange(e) {
         this.setState({
-            dueDate: date
+            dueDate: moment(e.target.value, 'YYYY-MM-DD')
         });
+    }
+
+    hanldeEmailResponsibleChange(e) {
+        this.setState({email: e.target.value});
+    }
+
+    hanldeNameResponsibleChange(e) {
+        this.setState({name: e.target.value});
     }
 
     handleSubmit(e) {
@@ -91,21 +101,30 @@ export class TodoApp extends Component {
         e.preventDefault();
         console.log(this.state);
 
-        if (!this.state.text.length || !this.state.priority.length || !this.state.dueDate)
+        if (!this.state.description.length || !this.state.status.length || !this.state.dueDate)
             return;
 
         const newItem = {
-            text: this.state.text,
-            priority: this.state.priority,
+            description: this.state.description,
+            status: this.state.status,
             dueDate: this.state.dueDate,
+            responsible : {name : this.state.name, email : this.state.email}
 
         };
         this.setState(prevState => ({
             items: prevState.items.concat(newItem),
-            text: '',
-            priority: '',
-            dueDate: ''
+            description: '',
+            status: '',
+            dueDate: moment(),
+            name : '',
+            email : ''
         }));
+    }
+
+    componentDidMount(){
+        this.setState(prevState => ({
+            items: prevState.items.concat(this.props.todoList),
+        }))
     }
 }
 

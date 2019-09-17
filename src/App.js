@@ -1,9 +1,34 @@
 import React from 'react';
 import './App.css';
 import Menux from './component/Menu.js';
-import { TodoList } from './component/TodoList';
-import 'react-datepicker/dist/react-datepicker.css';
+import { TodoApp } from './component/TodoApp';
+import { Login } from './component/Login'
 import moment from "moment";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+
+export default class App extends React.Component {
+  constructor(props){
+    super(props)
+    localStorage.setItem('srd98@hotmail.com',"123");
+  }
+
+
+  render() {
+    return (
+      <div>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={LoginView} />
+            <Route exact path="/home" component={HomeView} />
+            <Route exact path="/login" component={LoginView} />
+          </Switch>
+        </Router>
+
+      </div>
+    );
+  }
+}
 
 const items = [{
   description: "some description text ",
@@ -15,15 +40,16 @@ const items = [{
   dueDate: moment(new Date(156464645646))
 }]
 
-function App() {
-  return (
-    <div style={{backgroundColor : "#f5f5f5"}}>
-      <Menux />
-      <TodoList todoList={items} />
-    </div>
 
-  );
+const LoginView = () => (
+  <div>
+    {localStorage.getItem('isLoggedIn') ? <div><Menux /><TodoApp todoList={items} /> </div> : <Login />}
+  </div>
+);
 
-}
+const HomeView = () => (
+  <div>
+    {localStorage.getItem('isLoggedIn') ? <div><Menux /><TodoApp todoList={items} /> </div> : <Login />}
+  </div>
+);
 
-export default App;
