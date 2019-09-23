@@ -35,7 +35,7 @@ export default function Menux() {
                         <PersonIcon  style={{fontSize: "3rem"}}/>
                     </ListItemIcon>
                     <ListItemText >
-                        <p className="text-menu">Santiago</p>
+                        <p className="text-menu">{localStorage.getItem("name")}</p>
                         <p className="text-menu">{localStorage.getItem("correo")}</p>
                     </ListItemText>
                 </ListItem>

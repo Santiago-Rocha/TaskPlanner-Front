@@ -67,6 +67,9 @@ export class Login extends React.Component {
                                 <MDBBtn gradient="aqua" type="submit">Login</MDBBtn>
                             </div>
                         </form>
+                        <div className="text-center" style={{marginTop:"20px"}}>
+                            <a href="/signup">Create Account</a>
+                        </div>
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>

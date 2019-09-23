@@ -3,6 +3,7 @@ import './App.css';
 import Menux from './component/Menu.js';
 import { TodoApp } from './component/TodoApp';
 import { Login } from './component/Login'
+import {Signup} from './component/Signup.js'
 import moment from "moment";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -10,7 +11,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 export default class App extends React.Component {
   constructor(props){
     super(props)
-    localStorage.setItem('srd98@hotmail.com',"123");
   }
 
 
@@ -22,6 +22,7 @@ export default class App extends React.Component {
             <Route exact path="/" component={LoginView} />
             <Route exact path="/home" component={HomeView} />
             <Route exact path="/login" component={LoginView} />
+            <Route exact path="/signup" component={SignupView} />
           </Switch>
         </Router>
 
@@ -50,6 +51,12 @@ const LoginView = () => (
 const HomeView = () => (
   <div>
     {localStorage.getItem('isLoggedIn') ? <div><Menux /><TodoApp todoList={items} /> </div> : <Login />}
+  </div>
+);
+
+const SignupView = () =>(
+  <div>
+    {localStorage.getItem('isLoggedIn') ? <div><Menux /><TodoApp todoList={items} /> </div> : <Signup />}
   </div>
 );
 
