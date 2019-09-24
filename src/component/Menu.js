@@ -47,7 +47,7 @@ export default function Menux() {
     );
     return (
         <div>
-            <MenuIcon onClick={toggleDrawer('left', true)}/>
+            <MenuIcon onClick={toggleDrawer('left', true)} style={{position:"absolute",top:0, left:0}}/>
             <Drawer open={state.left} onClose={toggleDrawer('left', false)}>
                 {sideList('left')}
             </Drawer>

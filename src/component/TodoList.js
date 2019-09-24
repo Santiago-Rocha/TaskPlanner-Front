@@ -1,5 +1,5 @@
 import React from 'react';
-import {Todo} from './Todo'
+import { Todo } from './Todo'
 
 
 export class TodoList extends React.Component {
@@ -7,19 +7,23 @@ export class TodoList extends React.Component {
 
     render() {
         const todoList = this.props.todoList.map((todo, i) => {
-            return (
-                <div key={i}>
-                    <Todo description={todo.description} dueDate={todo.dueDate} status={todo.status} responsible={todo.responsible}/>
-                </div>
-                
-            );
+            let filName = todo.responsible.name.match(".*" + this.props.filter.name + ".*")
+            let filStatus = todo.status.match(".*" + this.props.filter.status + ".*")
+            if (todo.responsible.name.length == (filName == null ? 0 :  filName[0].length) &&
+                todo.status.length == (filStatus == null ? 0 :  filStatus[0].length) ) {
+                return (
+                    <div key={i}>
+                        <Todo description={todo.description} dueDate={todo.dueDate} status={todo.status} responsible={todo.responsible} />
+                    </div>
+                );
+            }
         });
 
         return (
             <div className="cardContainer">
                 {todoList}
             </div>
-            
+
         );
 
 

@@ -1,39 +1,83 @@
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import moment from "moment";
 import React, { Component } from 'react';
 import { TodoList } from "./TodoList";
 import AddIcon from '@material-ui/icons/Add';
 import { Fab } from '@material-ui/core';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import { lightBlue, blue } from '@material-ui/core/colors';
 
 
 
 export class TodoApp extends Component {
     constructor(props) {
         super(props);
-        this.state = { items: [], description: '', status: '', dueDate: moment(), name: '', email: '', open: false };
+        this.state = {
+            items: [], description: '', status: '', dueDate: moment(), name: '', email: '', open: false,
+            openFilter: false, filter: { name: '', status: '', dueDate: moment() }, filtering: { name: '', status: '', dueDate: moment() }
+        };
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.hanldeNameResponsibleChange = this.hanldeNameResponsibleChange.bind(this);
         this.hanldeEmailResponsibleChange = this.hanldeEmailResponsibleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmitFilter = this.handleSubmitFilter.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
+        this.handleCloseFilter = this.handleCloseFilter.bind(this);
+        this.handleOpenFilter = this.handleOpenFilter.bind(this);
+        this.handleNameFilterChange = this.handleNameFilterChange.bind(this);
+        this.handleStatusFilterChange = this.handleStatusFilterChange.bind(this);
+        this.handleDueDateFilterChange = this.handleDueDateFilterChange.bind(this);
     }
 
     render() {
         return (
-            <div>
-                <TodoList todoList={this.state.items} />
+            <div id="temp">
+                <TodoList todoList={this.state.items} filter={this.state.filtering} />
 
-                <Fab onClick={this.handleOpen} style={{position: "absolute", right: "0px", bottom: "0", margin: "10px"}}>
+                <Fab onClick={this.handleOpen} style={{ position: "absolute", right: "0px", bottom: "0", margin: "10px" }}>
                     <AddIcon></AddIcon>
                 </Fab>
+                <FilterListIcon onClick={this.handleOpenFilter} style={{position:"absolute",top:0, right:0}}/>
+
+                <Dialog onClose={this.handleCloseFilter} aria-labelledby="simple-dialog-title" open={this.state.openFilter}>
+                    <form onSubmit={this.handleSubmitFilter} className="todo-form" style={{ width: "100%" }}>
+                        <h3>Filter</h3>
+                        <TextField
+                            id="textFilter"
+                            label="Name"
+                            value={this.state.filter.name}
+                            onChange={this.handleNameFilterChange}
+                            margin="normal" />
+                        <br />
+                        <TextField
+                            id="statusFilter"
+                            label="Status"
+                            value={this.state.filter.status}
+                            onChange={this.handleStatusFilterChange}
+                            margin="normal" />
+                        <br />
+                        <TextField
+                            id="due-date"
+                            label="Due Date"
+                            type="date"
+                            defaultValue={this.state.filter.dueDate.format('YYYY-MM-DD')}
+                            onChange={this.handleDueDateFilterChange}
+                            margin="normal"
+                            InputLabelProps={{
+                                shrink: true,
+                            }} />
+                        <Button variant="outlined" color="secondary" type="submit">
+                            Apply
+                        </Button>
+                    </form>
+                </Dialog>
                 <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
-                    <form onSubmit={this.handleSubmit} className="todo-form" style={{width:"100%"}}>
+                    <form onSubmit={this.handleSubmit} className="todo-form" style={{ width: "100%" }}>
                         <h3>New TODO</h3>
                         <TextField
                             id="text"
@@ -91,6 +135,14 @@ export class TodoApp extends Component {
         this.setState({ open: false });
     }
 
+    handleOpenFilter(e) {
+        this.setState({ openFilter: true });
+    }
+
+    handleCloseFilter(e) {
+        this.setState({ openFilter: false });
+    }
+
     handleDescriptionChange(e) {
         this.setState({
             description: e.target.value
@@ -115,6 +167,31 @@ export class TodoApp extends Component {
 
     hanldeNameResponsibleChange(e) {
         this.setState({ name: e.target.value });
+    }
+
+    handleNameFilterChange(e) {
+        const fil = this.state.filter
+        fil.name = e.target.value;
+        this.setState({ filter: fil });
+    }
+
+    handleStatusFilterChange(e) {
+        const fil = this.state.filter
+        fil.status = e.target.value;
+        this.setState({ filter: fil });
+    }
+
+    handleDueDateFilterChange(e) {
+        const fil = this.state.filter
+        fil.dueDate = moment(e.target.value, 'YYYY-MM-DD')
+        this.setState({ filter: fil });
+    }
+
+    handleSubmitFilter(e) {
+        e.preventDefault();
+        this.setState({ filtering: this.state.filter });
+        this.setState({openFilter:false});
+
     }
 
     handleSubmit(e) {
