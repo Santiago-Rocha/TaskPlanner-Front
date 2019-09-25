@@ -4,6 +4,7 @@ import Menux from './component/Menu.js';
 import { TodoApp } from './component/TodoApp';
 import { Login } from './component/Login'
 import {Signup} from './component/Signup.js'
+import {UserProfile} from './component/UserProfile.js'
 import moment from "moment";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -23,6 +24,7 @@ export default class App extends React.Component {
             <Route exact path="/home" component={HomeView} />
             <Route exact path="/login" component={LoginView} />
             <Route exact path="/signup" component={SignupView} />
+            <Route exact path="/profile" component={ProfileView}/>
           </Switch>
         </Router>
 
@@ -38,7 +40,7 @@ const items = [{
     email: "sancarbar@gmail"
   },
   status: "ready",
-  dueDate: moment(new Date(156464645646))
+  dueDate: moment(new Date(156464645646), 'YYYY-MM-DD')
 }]
 
 
@@ -57,6 +59,12 @@ const HomeView = () => (
 const SignupView = () =>(
   <div>
     {localStorage.getItem('isLoggedIn') ? <div><Menux /><TodoApp todoList={items} /> </div> : <Signup />}
+  </div>
+);
+
+const ProfileView = () =>(
+  <div>
+    {localStorage.getItem('isLoggedIn') ? <div><Menux /><UserProfile /> </div> : <Signup />}
   </div>
 );
 

@@ -16,7 +16,7 @@ export class TodoApp extends Component {
         super(props);
         this.state = {
             items: [], description: '', status: '', dueDate: moment(), name: '', email: '', open: false,
-            openFilter: false, filter: { name: '', status: '', dueDate: moment() }, filtering: { name: '', status: '', dueDate: moment() }
+            openFilter: false, filter: { name: '', status: '', dueDate: null }, filtering: { name: '', status: '', dueDate: null }
         };
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
@@ -32,6 +32,7 @@ export class TodoApp extends Component {
         this.handleNameFilterChange = this.handleNameFilterChange.bind(this);
         this.handleStatusFilterChange = this.handleStatusFilterChange.bind(this);
         this.handleDueDateFilterChange = this.handleDueDateFilterChange.bind(this);
+        this.handleClear = this.handleClear.bind(this);
     }
 
     render() {
@@ -42,7 +43,7 @@ export class TodoApp extends Component {
                 <Fab onClick={this.handleOpen} style={{ position: "absolute", right: "0px", bottom: "0", margin: "10px" }}>
                     <AddIcon></AddIcon>
                 </Fab>
-                <FilterListIcon onClick={this.handleOpenFilter} style={{position:"absolute",top:0, right:0}}/>
+                <FilterListIcon onClick={this.handleOpenFilter} style={{position:"absolute",top:0, right:0, fill: "white"}}/>
 
                 <Dialog onClose={this.handleCloseFilter} aria-labelledby="simple-dialog-title" open={this.state.openFilter}>
                     <form onSubmit={this.handleSubmitFilter} className="todo-form" style={{ width: "100%" }}>
@@ -65,14 +66,18 @@ export class TodoApp extends Component {
                             id="due-date"
                             label="Due Date"
                             type="date"
-                            defaultValue={this.state.filter.dueDate.format('YYYY-MM-DD')}
+                            defaultValue={ this.state.filter.dueDate ? this.state.filter.dueDate.format('YYYY-MM-DD'): null}
                             onChange={this.handleDueDateFilterChange}
                             margin="normal"
                             InputLabelProps={{
                                 shrink: true,
                             }} />
+                            <br/><br/>
                         <Button variant="outlined" color="secondary" type="submit">
                             Apply
+                        </Button>
+                        <Button onClick={this.handleClear} variant="outlined" color="primary" style={{marginLeft:"5px"}}>
+                            Clear All
                         </Button>
                     </form>
                 </Dialog>
@@ -125,6 +130,11 @@ export class TodoApp extends Component {
                 </Dialog>
             </div >
         );
+    }
+
+    handleClear(e){
+        this.setState({filter: { name: '', status: '', dueDate: null }})
+        this.setState({filtering: { name: '', status: '', dueDate: null }})
     }
 
     handleOpen(e) {

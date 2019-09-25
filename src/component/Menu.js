@@ -32,7 +32,9 @@ export default function Menux() {
             <List>
                 <ListItem>
                     <ListItemIcon>
-                        <PersonIcon  style={{fontSize: "3rem"}}/>
+                        <a href="/profile">
+                            <PersonIcon  style={{fontSize: "3rem"}}/>
+                        </a>
                     </ListItemIcon>
                     <ListItemText >
                         <p className="text-menu">{localStorage.getItem("name")}</p>
@@ -47,7 +49,7 @@ export default function Menux() {
     );
     return (
         <div>
-            <MenuIcon onClick={toggleDrawer('left', true)} style={{position:"absolute",top:0, left:0}}/>
+            <MenuIcon onClick={toggleDrawer('left', true)} style={{position:"absolute",top:0, left:0, zIndex: "1", fill:"lightgreen" }}/>
             <Drawer open={state.left} onClose={toggleDrawer('left', false)}>
                 {sideList('left')}
             </Drawer>
