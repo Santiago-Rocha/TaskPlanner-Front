@@ -7,7 +7,7 @@ import { TodoList } from "./TodoList";
 import AddIcon from '@material-ui/icons/Add';
 import { Fab } from '@material-ui/core';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { lightBlue, blue } from '@material-ui/core/colors';
+
 
 
 
@@ -34,6 +34,8 @@ export class TodoApp extends Component {
         this.handleDueDateFilterChange = this.handleDueDateFilterChange.bind(this);
         this.handleClear = this.handleClear.bind(this);
     }
+
+    
 
     render() {
         return (
@@ -232,10 +234,26 @@ export class TodoApp extends Component {
 
     }
 
-    componentDidMount() {
+    /*componentDidMount() {
         this.setState(prevState => ({
             items: prevState.items.concat(this.props.todoList),
         }))
+    }*/
+
+
+    componentDidMount() {
+        console.log("hola mama");
+        fetch('http://localhost:8080/task')
+            .then(response => response.json())
+            .then(data => {
+                let tasksList = [];
+                data.forEach(function (task) {
+                    task["dueDate"] =  moment(task["dueDate"])
+                     tasksList.push(task)
+
+                });
+                this.setState({items: tasksList});
+            });
     }
 }
 
