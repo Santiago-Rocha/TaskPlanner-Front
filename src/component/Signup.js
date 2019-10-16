@@ -1,17 +1,18 @@
 import React from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn } from 'mdbreact';
 import user from "../user.svg"
-
+import axios from 'axios'
 
 export class Signup extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { email: '', password: '', repassword : '', name: '' }
+        this.state = { email: '', password: '', repassword: '', name: '', userName: '' }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.hanldePasswordChange = this.hanldePasswordChange.bind(this);
         this.hanldeRePasswordChange = this.hanldeRePasswordChange.bind(this);
         this.hanldenameChange = this.hanldenameChange.bind(this);
+        this.hanldeUserNameChange = this.hanldeUserNameChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -19,15 +20,27 @@ export class Signup extends React.Component {
         e.preventDefault();
         if (this.state.password != this.state.repassword) {
             alert("Password unmatch");
-        } else if(this.state.name && this.state.email && this.state.password && this.state.repassword ){
-            localStorage.setItem(this.state.email,this.state.password);
-            localStorage.setItem("name",this.state.name);
+        } else if (this.state.name && this.state.email && this.state.password && this.state.repassword) {
+            axios.post('http://localhost:8080/user', {
+                "name": this.state.name,
+                "userName": this.state.userName,
+                "biography": "",
+                "email": this.state.email,
+                "password": this.state.password
+            })
+                .then(function (response) {
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             window.location.href = "/login";
         }
-        else{
+        else {
             alert("incomplete fields")
         }
-        
+
+
     }
 
     handleEmailChange(e) {
@@ -38,12 +51,16 @@ export class Signup extends React.Component {
         this.setState({ password: e.target.value })
     }
 
-    hanldeRePasswordChange(e){
+    hanldeRePasswordChange(e) {
         this.setState({ repassword: e.target.value })
     }
 
-    hanldenameChange(e){
+    hanldenameChange(e) {
         this.setState({ name: e.target.value })
+    }
+
+    hanldeUserNameChange(e) {
+        this.setState({ userName: e.target.value })
     }
 
     render() {
@@ -78,6 +95,15 @@ export class Signup extends React.Component {
                                     success="right"
                                     value={this.state.email}
                                     onChange={this.handleEmailChange}
+                                />
+                                <MDBInput
+                                    label="Type your user name"
+                                    type="text"
+                                    validate
+                                    error="wrong"
+                                    success="right"
+                                    value={this.state.userName}
+                                    onChange={this.hanldeUserNameChange}
                                 />
                                 <MDBInput
                                     label="Type your password"

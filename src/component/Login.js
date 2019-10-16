@@ -1,6 +1,7 @@
 import React from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn } from 'mdbreact';
 import login from "../login.png"
+import axios from 'axios'
 
 export class Login extends React.Component {
 
@@ -14,13 +15,20 @@ export class Login extends React.Component {
 
     onSubmit(e){
         e.preventDefault();
-        if(localStorage.getItem(this.state.email)===this.state.password){
-            localStorage.setItem('isLoggedIn',true);
-            localStorage.setItem('correo', this.state.email);
-            window.location.href = "/";
-        } else {
-            alert("The email or password is incorrect");
-        }
+        axios.post('http://localhost:8080/login', {
+             userName: this.state.email,
+             password: this.state.password
+         })
+             .then(function (response) {
+                 console.log(response.data);
+                 localStorage.setItem("accessToken",response.data.accessToken);
+                 localStorage.setItem("isLoggedIn",true);
+                 window.location.href = "/home";
+             })
+             .catch(function (error) {
+                 alert("error al inciar sesion");
+                 console.log(error);
+             });
     }
 
     handleEmailChange(e){
@@ -47,8 +55,8 @@ export class Login extends React.Component {
                         <form onSubmit={this.onSubmit}>
                             <div className="grey-text">
                                 <MDBInput
-                                    label="Type your email"
-                                    type="email"
+                                    label="Type your user name"
+                                    type="text"
                                     validate
                                     error="wrong"
                                     success="right"

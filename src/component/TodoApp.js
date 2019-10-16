@@ -7,7 +7,7 @@ import { TodoList } from "./TodoList";
 import AddIcon from '@material-ui/icons/Add';
 import { Fab } from '@material-ui/core';
 import FilterListIcon from '@material-ui/icons/FilterList';
-
+import axios from 'axios'
 
 
 
@@ -35,7 +35,7 @@ export class TodoApp extends Component {
         this.handleClear = this.handleClear.bind(this);
     }
 
-    
+
 
     render() {
         return (
@@ -45,7 +45,7 @@ export class TodoApp extends Component {
                 <Fab onClick={this.handleOpen} style={{ position: "absolute", right: "0px", bottom: "0", margin: "10px" }}>
                     <AddIcon></AddIcon>
                 </Fab>
-                <FilterListIcon onClick={this.handleOpenFilter} style={{position:"absolute",top:0, right:0, fill: "white"}}/>
+                <FilterListIcon onClick={this.handleOpenFilter} style={{ position: "absolute", top: 0, right: 0, fill: "white" }} />
 
                 <Dialog onClose={this.handleCloseFilter} aria-labelledby="simple-dialog-title" open={this.state.openFilter}>
                     <form onSubmit={this.handleSubmitFilter} className="todo-form" style={{ width: "100%" }}>
@@ -68,17 +68,17 @@ export class TodoApp extends Component {
                             id="due-date"
                             label="Due Date"
                             type="date"
-                            defaultValue={ this.state.filter.dueDate ? this.state.filter.dueDate.format('YYYY-MM-DD'): null}
+                            defaultValue={this.state.filter.dueDate ? this.state.filter.dueDate.format('YYYY-MM-DD') : null}
                             onChange={this.handleDueDateFilterChange}
                             margin="normal"
                             InputLabelProps={{
                                 shrink: true,
                             }} />
-                            <br/><br/>
+                        <br /><br />
                         <Button variant="outlined" color="secondary" type="submit">
                             Apply
                         </Button>
-                        <Button onClick={this.handleClear} variant="outlined" color="primary" style={{marginLeft:"5px"}}>
+                        <Button onClick={this.handleClear} variant="outlined" color="primary" style={{ marginLeft: "5px" }}>
                             Clear All
                         </Button>
                     </form>
@@ -134,9 +134,9 @@ export class TodoApp extends Component {
         );
     }
 
-    handleClear(e){
-        this.setState({filter: { name: '', status: '', dueDate: null }})
-        this.setState({filtering: { name: '', status: '', dueDate: null }})
+    handleClear(e) {
+        this.setState({ filter: { name: '', status: '', dueDate: null } })
+        this.setState({ filtering: { name: '', status: '', dueDate: null } })
     }
 
     handleOpen(e) {
@@ -202,14 +202,14 @@ export class TodoApp extends Component {
     handleSubmitFilter(e) {
         e.preventDefault();
         this.setState({ filtering: this.state.filter });
-        this.setState({openFilter:false});
+        this.setState({ openFilter: false });
 
     }
 
     handleSubmit(e) {
 
         e.preventDefault();
-        console.log(this.state);
+        let TodoApp =  this
 
         if (!this.state.description.length || !this.state.status.length || !this.state.dueDate)
             return;
@@ -221,8 +221,17 @@ export class TodoApp extends Component {
             responsible: { name: this.state.name, email: this.state.email }
 
         };
+
+        this.axios.post('task', newItem)
+        .then(function (response) {
+            TodoApp.fetchTaks();
+        })
+        .catch(function (error) {
+            console.log(error)
+        });
+
+
         this.setState(prevState => ({
-            items: prevState.items.concat(newItem),
             description: '',
             status: '',
             dueDate: moment(),
@@ -234,25 +243,36 @@ export class TodoApp extends Component {
 
     }
 
-    /*componentDidMount() {
-        this.setState(prevState => ({
-            items: prevState.items.concat(this.props.todoList),
-        }))
-    }*/
 
 
     componentDidMount() {
-        console.log("hola mama");
-        fetch('http://localhost:8080/task')
-            .then(response => response.json())
-            .then(data => {
+        
+        this.axios = axios.create({
+            baseURL: 'http://localhost:8080/api/',
+            timeout: 1000,
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem("accessToken") }
+        });
+
+        this.fetchTaks();
+
+        
+    }
+
+    fetchTaks(){
+        let TodoApp =  this
+        this.axios.get('task')
+            .then(function (response) {
                 let tasksList = [];
-                data.forEach(function (task) {
-                    task["dueDate"] =  moment(task["dueDate"])
-                     tasksList.push(task)
+                response.data.forEach(function (task) {
+                    task["dueDate"] = moment(task["dueDate"])
+                    tasksList.push(task)
 
                 });
-                this.setState({items: tasksList});
+                TodoApp.setState({ items: tasksList });
+            })
+            .catch(function (error) {
+                alert("error al cargar las tareas");
+                console.log(error);
             });
     }
 }
