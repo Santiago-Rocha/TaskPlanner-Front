@@ -262,12 +262,14 @@ export class TodoApp extends Component {
         let TodoApp =  this
         this.axios.get('task')
             .then(function (response) {
+                console.log(response.data)
                 let tasksList = [];
                 response.data.forEach(function (task) {
                     task["dueDate"] = moment(task["dueDate"])
                     tasksList.push(task)
 
                 });
+                
                 TodoApp.setState({ items: tasksList });
             })
             .catch(function (error) {
