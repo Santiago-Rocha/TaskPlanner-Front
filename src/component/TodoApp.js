@@ -15,7 +15,7 @@ export class TodoApp extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: [], description: '', status: '', dueDate: moment(), name: '', email: '', open: false,
+            items: [], description: '', status: '', dueDate: moment(), name: '', email: '', open: false, file : null,
             openFilter: false, filter: { name: '', status: '', dueDate: null }, filtering: { name: '', status: '', dueDate: null }
         };
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -33,6 +33,7 @@ export class TodoApp extends Component {
         this.handleStatusFilterChange = this.handleStatusFilterChange.bind(this);
         this.handleDueDateFilterChange = this.handleDueDateFilterChange.bind(this);
         this.handleClear = this.handleClear.bind(this);
+        this.handleFileChange = this.handleFileChange.bind(this);
     }
 
 
@@ -125,6 +126,8 @@ export class TodoApp extends Component {
                                 shrink: true,
                             }} />
                         <br />
+                        <input type="file" id="file" onChange={this.handleFileChange}/>
+                        <br />
                         <Button variant="outlined" color="secondary" type="submit">
                             Add #{this.state.items.length + 1}
                         </Button>
@@ -206,23 +209,46 @@ export class TodoApp extends Component {
 
     }
 
-    handleSubmit(e) {
+    handleFileChange(e){
+        this.setState({
+            file: e.target.files[0]
+        }); 
+    }
 
-        e.preventDefault();
-        let TodoApp =  this
+    SubmitImg(callback, TodoApp){
+        var fileURL =  ""
+        if(this.state.file != null){
+            let data = new FormData();
+            data.append('file', this.state.file);
+            this.axios.post('files', data)
+                .then(function (response) {
+                    console.log("file uploaded!", data);
+                    
+                    fileURL = "img/files/"+response.data
+                    callback(fileURL, TodoApp);
+            })
+            .catch(function (error) {
+                console.log("failed file upload", error);
+            });
+        }
+        else{
+            callback(fileURL,TodoApp);
+        }
+        
+    }
 
-        if (!this.state.description.length || !this.state.status.length || !this.state.dueDate)
-            return;
-
+    submitItem(fileUrl,TodoApp){
         const newItem = {
-            description: this.state.description,
-            status: this.state.status,
-            dueDate: this.state.dueDate,
-            responsible: { name: this.state.name, email: this.state.email }
+            description: TodoApp.state.description,
+            status: TodoApp.state.status,
+            dueDate: TodoApp.state.dueDate,
+            responsible: { name: TodoApp.state.name, email: TodoApp.state.email },
 
         };
+        if(fileUrl.length > 0 ) newItem["fileUrl"] =  fileUrl
 
-        this.axios.post('task', newItem)
+        
+        TodoApp.axios.post('task', newItem)
         .then(function (response) {
             TodoApp.fetchTaks();
         })
@@ -230,8 +256,10 @@ export class TodoApp extends Component {
             console.log(error)
         });
 
+        
 
-        this.setState(prevState => ({
+
+        TodoApp.setState(prevState => ({
             description: '',
             status: '',
             dueDate: moment(),
@@ -239,8 +267,15 @@ export class TodoApp extends Component {
             email: '',
             open: false
         }));
+    }
 
-
+    handleSubmit(e) {
+        let TodoApp =  this
+        e.preventDefault();
+        if (!this.state.description.length || !this.state.status.length || !this.state.dueDate)
+            return;
+        
+        this.SubmitImg(this.submitItem, TodoApp)
     }
 
 

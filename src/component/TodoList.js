@@ -15,7 +15,7 @@ export class TodoList extends React.Component {
                 (filDate ? todo.dueDate.format('YYYY-MM-DD') == filDate.format('YYYY-MM-DD') :  true)) {
                 return (
                     <div key={i}>
-                        <Todo description={todo.description} dueDate={todo.dueDate} status={todo.status} responsible={todo.responsible} />
+                        <Todo description={todo.description} dueDate={todo.dueDate} status={todo.status} responsible={todo.responsible} img={todo.fileUrl ? todo.fileUrl : ""} />
                     </div>
                 );
             }

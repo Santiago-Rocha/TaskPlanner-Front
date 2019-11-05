@@ -12,6 +12,7 @@ export class Todo extends React.Component {
                     <p>{this.props.description}</p>
                     <p>{this.props.status} - {this.props.dueDate.format('DD-MM-YYYY')} </p>
                     <p>{this.props.responsible.name}</p>
+                    { this.props.img ? <img src={"http://localhost:8080/"+this.props.img} width="100" height="100"/> : <div />}
                 </CardContent>
             </Card>
         );
